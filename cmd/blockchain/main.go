@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"os"
-)
+import "os"
 
 func main() {
 
@@ -15,40 +12,27 @@ func main() {
 	switch os.Args[1] {
 
 	case "init":
-		fmt.Println("Initializing blockchain...")
+		runInit()
 
-	case "fund":
-		fmt.Println("Funding account...")
+	// case "fund":
+	// 	runFund()
 
-	case "send":
-		fmt.Println("Sending transaction...")
+	// case "send":
+	// 	runSend()
 
-	case "mine":
-		fmt.Println("Mining block...")
+	// case "mine":
+	// 	runMine()
 
-	case "validate":
-		fmt.Println("Validating blockchain...")
+	// case "validate":
+	// 	runValidate()
 
-	case "balances":
-		fmt.Println("Showing balances...")
+	// case "balances":
+	// 	runBalances()
 
-	case "print":
-		fmt.Println("Printing blockchain...")
+	// case "print":
+	// 	runPrint()
 
 	default:
 		printUsage()
 	}
-}
-
-func printUsage() {
-	fmt.Println("Toy Blockchain CLI")
-	fmt.Println()
-	fmt.Println("Commands:")
-	fmt.Println("  init")
-	fmt.Println("  fund <account> <amount>")
-	fmt.Println("  send <from> <to> <amount>")
-	fmt.Println("  mine")
-	fmt.Println("  validate")
-	fmt.Println("  balances")
-	fmt.Println("  print")
 }
