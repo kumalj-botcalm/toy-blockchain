@@ -29,8 +29,8 @@ func main() {
 	case "balances":
 		runBalances()
 
-	case "print":
-		runPrint()
+	// case "print":
+	// 	runPrint()
 
 	default:
 		printUsage()

@@ -7,8 +7,40 @@
       "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
       "nonce": 0,
       "hash": "989926b8148f71185887bada0d10fc01c7d10c4e0830d944c51e5286ea747ccd"
+    },
+    {
+      "index": 1,
+      "timestamp": 1784557166,
+      "transactions": [
+        {
+          "id": "ff4246db12150387e891426f856da13707b5daa5c1d8c9775a8cb7880f60d395",
+          "sender": "SYSTEM",
+          "receiver": "Alice",
+          "amount": 100,
+          "timestamp": 1784557166
+        }
+      ],
+      "previous_hash": "989926b8148f71185887bada0d10fc01c7d10c4e0830d944c51e5286ea747ccd",
+      "nonce": 811,
+      "hash": "00e8a054ceb26e378980eca87ba9a874162107996d31331094253687ef1fdb5b"
+    },
+    {
+      "index": 2,
+      "timestamp": 1784557464,
+      "transactions": [
+        {
+          "id": "7c999676cccbc0df2b40efabb4cacea99bda1c6c05e55eb379e8a3463458b1fb",
+          "sender": "Alice",
+          "receiver": "Bob",
+          "amount": 40,
+          "timestamp": 1784557463
+        }
+      ],
+      "previous_hash": "00e8a054ceb26e378980eca87ba9a874162107996d31331094253687ef1fdb5b",
+      "nonce": 207,
+      "hash": "005c52a9e8340dedb46683cb8729f3a8d2359ab2be0c18e1f52a0eba2cddbb80"
     }
   ],
-  "PendingTransactions": [],
+  "PendingTransactions": null,
   "Difficulty": 2
 }
