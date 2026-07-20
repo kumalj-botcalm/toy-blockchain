@@ -5,18 +5,27 @@ import (
 )
 
 const (
-	GenesisPreviousHash       = "0000000000000000000000000000000000000000000000000000000000000000"
+	GenesisPreviousHash = "0000000000000000000000000000000000000000000000000000000000000000"
 	GenesisTimestamp    int64 = 1721174400
 )
 
-// NewGenesisBlock creates the first block in the blockchain.
-func NewGenesisBlock() *Block {
+// NewGenesisBlock creates the deterministic genesis block.
+func NewGenesisBlock() (*Block, error) {
 
-	return &Block{
+	block := &Block{
 		Index:        0,
 		Timestamp:    GenesisTimestamp,
 		Transactions: []transaction.Transaction{},
 		PreviousHash: GenesisPreviousHash,
 		Nonce:        0,
 	}
+
+	hash, err := block.CalculateHash()
+	if err != nil {
+		return nil, err
+	}
+
+	block.Hash = hash
+
+	return block, nil
 }
