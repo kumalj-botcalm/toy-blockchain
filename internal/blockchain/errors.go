@@ -8,4 +8,5 @@ var (
 	ErrInvalidHash         = errors.New("invalid block hash")
 	ErrInvalidProofOfWork  = errors.New("invalid proof of work")
 	ErrInvalidIndex = errors.New("invalid block index")
+	ErrInvalidTimestamp = errors.New("invalid timestamp")
    )

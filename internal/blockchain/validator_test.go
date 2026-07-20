@@ -108,3 +108,23 @@ func TestInvalidBlockIndex(t *testing.T) {
 		t.Fatal("expected invalid block index")
 	}
 }
+
+
+func TestInvalidTimestamp(t *testing.T) {
+
+	bc, _ := New(2)
+
+	fund, _ := transaction.New(SystemAccount, "Alice", 100)
+
+	_ = bc.AddTransaction(*fund)
+	_ = bc.MinePendingTransactions()
+
+	// Make timestamp older than previous block
+	bc.Blocks[1].Timestamp = bc.Blocks[0].Timestamp - 1
+
+	err := bc.Validate()
+
+	if err == nil {
+		t.Fatal("expected invalid timestamp")
+	}
+}

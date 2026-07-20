@@ -44,6 +44,10 @@ func (bc *Blockchain) Validate() error {
 		if current.Index != previous.Index+1 {
 			return ErrInvalidIndex
 		}
+
+		if current.Timestamp < previous.Timestamp {
+	return ErrInvalidTimestamp
+}
 	}
 	return nil
 }
