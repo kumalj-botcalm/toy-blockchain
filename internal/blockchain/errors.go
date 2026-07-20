@@ -3,6 +3,8 @@ package blockchain
 import "errors"
 
 var (
-	ErrInvalidHash = errors.New("invalid hash")
-	ErrInvalidBlock = errors.New("invalid block")
+	ErrInvalidGenesis      = errors.New("invalid genesis block")
+	ErrInvalidPreviousHash = errors.New("invalid previous hash")
+	ErrInvalidHash         = errors.New("invalid block hash")
+	ErrInvalidProofOfWork  = errors.New("invalid proof of work")
 )

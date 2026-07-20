@@ -73,3 +73,13 @@ func (bc *Blockchain) MinePendingTransactions() error {
 	return nil
 }
 
+// Print prints the blockchain.
+func (bc *Blockchain) Print() {
+
+	for _, block := range bc.Blocks {
+		fmt.Println(block)
+	}
+}
+
+
+

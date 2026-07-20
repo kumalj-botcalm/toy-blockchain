@@ -1,6 +1,8 @@
 package blockchain
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
@@ -30,4 +32,37 @@ func NewBlock(
 		PreviousHash: previousHash,
 		Nonce:        0,
 	}
+}
+
+// String returns a formatted representation of the block.
+func (b Block) String() string {
+
+	var out strings.Builder
+
+	out.WriteString("----------------------------------------\n")
+
+	out.WriteString(fmt.Sprintf("Block #%d\n", b.Index))
+
+	out.WriteString(fmt.Sprintf("Hash: %s\n", b.Hash))
+
+	out.WriteString(fmt.Sprintf("Previous: %s\n", b.PreviousHash))
+
+	out.WriteString(fmt.Sprintf("Nonce: %d\n", b.Nonce))
+
+	out.WriteString(fmt.Sprintf("Timestamp: %s\n",
+		time.Unix(b.Timestamp, 0).Format(time.RFC3339)))
+
+	out.WriteString("Transactions:\n")
+
+	if len(b.Transactions) == 0 {
+		out.WriteString("  (none)\n")
+	} else {
+		for _, tx := range b.Transactions {
+			out.WriteString("  ")
+			out.WriteString(tx.String())
+			out.WriteString("\n")
+		}
+	}
+
+	return out.String()
 }

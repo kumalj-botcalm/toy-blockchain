@@ -71,3 +71,13 @@ func (t *Transaction) GenerateID() (string, error) {
 
 	return hex.EncodeToString(hash[:]), nil
 }
+
+// String returns a human-readable representation of the transaction.
+func (t Transaction) String() string {
+	return fmt.Sprintf(
+		"%s -> %s : %.2f",
+		t.Sender,
+		t.Receiver,
+		t.Amount,
+	)
+}
