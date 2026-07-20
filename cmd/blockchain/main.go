@@ -14,23 +14,23 @@ func main() {
 	case "init":
 		runInit()
 
-	// case "fund":
-	// 	runFund()
+	case "fund":
+		runFund()
 
-	// case "send":
-	// 	runSend()
+	case "send":
+		runSend()
 
-	// case "mine":
-	// 	runMine()
+	case "mine":
+		runMine()
 
-	// case "validate":
-	// 	runValidate()
+	case "validate":
+		runValidate()
 
-	// case "balances":
-	// 	runBalances()
+	case "balances":
+		runBalances()
 
-	// case "print":
-	// 	runPrint()
+	case "print":
+		runPrint()
 
 	default:
 		printUsage()
