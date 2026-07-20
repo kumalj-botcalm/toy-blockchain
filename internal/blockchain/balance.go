@@ -1,6 +1,6 @@
 package blockchain
 
-// Balances reconstructs balances from all mined blocks.
+// Balances rebuilds account balances from all mined blocks.
 func (bc *Blockchain) Balances() map[string]float64 {
 
 	balances := make(map[string]float64)
@@ -9,7 +9,7 @@ func (bc *Blockchain) Balances() map[string]float64 {
 
 		for _, tx := range block.Transactions {
 
-			if tx.Sender != "SYSTEM" {
+			if tx.Sender != SystemAccount {
 				balances[tx.Sender] -= tx.Amount
 			}
 

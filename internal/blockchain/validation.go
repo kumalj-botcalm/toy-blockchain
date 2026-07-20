@@ -40,6 +40,10 @@ func (bc *Blockchain) Validate() error {
 		if !strings.HasPrefix(current.Hash, target) {
 			return ErrInvalidProofOfWork
 		}
+
+		if current.Index != previous.Index+1 {
+			return ErrInvalidIndex
+		}
 	}
 	return nil
 }

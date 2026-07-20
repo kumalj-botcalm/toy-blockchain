@@ -7,4 +7,5 @@ var (
 	ErrInvalidPreviousHash = errors.New("invalid previous hash")
 	ErrInvalidHash         = errors.New("invalid block hash")
 	ErrInvalidProofOfWork  = errors.New("invalid proof of work")
-)
+	ErrInvalidIndex = errors.New("invalid block index")
+   )

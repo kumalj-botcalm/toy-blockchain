@@ -13,16 +13,50 @@ func TestBalances(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Genesis funding transaction.
-	tx1, _ := transaction.New("SYSTEM", "Alice", 100)
+	tx, err := transaction.New("SYSTEM", "Alice", 100)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	bc.AddTransaction(*tx1)
+	err = bc.AddTransaction(*tx)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	_ = bc.MinePendingTransactions()
+	err = bc.MinePendingTransactions()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	balances := bc.Balances()
 
 	if balances["Alice"] != 100 {
-		t.Fatalf("expected Alice balance to be 100")
+		t.Fatalf("expected Alice balance to be 100, got %v", balances["Alice"])
+	}
+}
+
+func TestRejectOverspending(t *testing.T) {
+
+	bc, _ := New(2)
+
+	tx, _ := transaction.New("Alice", "Bob", 100)
+
+	err := bc.AddTransaction(*tx)
+
+	if err == nil {
+		t.Fatal("expected overspending transaction to be rejected")
+	}
+}
+
+func TestSystemFunding(t *testing.T) {
+
+	bc, _ := New(2)
+
+	tx, _ := transaction.New(SystemAccount, "Alice", 100)
+
+	err := bc.AddTransaction(*tx)
+
+	if err != nil {
+		t.Fatal(err)
 	}
 }
