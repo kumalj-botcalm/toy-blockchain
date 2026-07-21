@@ -29,8 +29,23 @@ func New(difficulty int) (*Blockchain, error) {
 }
 
 // AddTransaction adds a transaction to the pending pool.
-func (bc *Blockchain) AddTransaction(tx transaction.Transaction) {
+func (bc *Blockchain) AddTransaction(tx transaction.Transaction) error {
+
+	// SYSTEM account can always create funds.
+	if tx.Sender == SystemAccount {
+		bc.PendingTransactions = append(bc.PendingTransactions, tx)
+		return nil
+	}
+
+	balances := bc.AvailableBalances()
+
+	if balances[tx.Sender] < tx.Amount {
+		return fmt.Errorf("insufficient balance")
+	}
+
 	bc.PendingTransactions = append(bc.PendingTransactions, tx)
+
+	return nil
 }
 
 // MinePendingTransactions mines all pending transactions into a new block.
@@ -72,4 +87,14 @@ func (bc *Blockchain) MinePendingTransactions() error {
 
 	return nil
 }
+
+// Print prints the blockchain.
+func (bc *Blockchain) Print() {
+
+	for _, block := range bc.Blocks {
+		fmt.Println(block)
+	}
+}
+
+
 

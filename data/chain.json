@@ -1,0 +1,14 @@
+{
+  "Blocks": [
+    {
+      "index": 0,
+      "timestamp": 1721174400,
+      "transactions": [],
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "nonce": 0,
+      "hash": "989926b8148f71185887bada0d10fc01c7d10c4e0830d944c51e5286ea747ccd"
+    }
+  ],
+  "PendingTransactions": [],
+  "Difficulty": 2
+}
