@@ -4,41 +4,27 @@
       "index": 0,
       "timestamp": 1721174400,
       "transactions": [],
+      "merkle_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
       "nonce": 0,
-      "hash": "989926b8148f71185887bada0d10fc01c7d10c4e0830d944c51e5286ea747ccd"
+      "hash": "aef789e23f01db04b88e29cb1a120c8798a17e9bee76af48116b3afb02ad5b47"
     },
     {
       "index": 1,
-      "timestamp": 1784557166,
+      "timestamp": 1784622861,
       "transactions": [
         {
-          "id": "ff4246db12150387e891426f856da13707b5daa5c1d8c9775a8cb7880f60d395",
+          "id": "2fd2f4d251ea2b62665ba36907324ba529f904f5ca63f4c4bafc512a5c4ff9b2",
           "sender": "SYSTEM",
           "receiver": "Alice",
           "amount": 100,
-          "timestamp": 1784557166
+          "timestamp": 1784622861
         }
       ],
-      "previous_hash": "989926b8148f71185887bada0d10fc01c7d10c4e0830d944c51e5286ea747ccd",
-      "nonce": 811,
-      "hash": "00e8a054ceb26e378980eca87ba9a874162107996d31331094253687ef1fdb5b"
-    },
-    {
-      "index": 2,
-      "timestamp": 1784557464,
-      "transactions": [
-        {
-          "id": "7c999676cccbc0df2b40efabb4cacea99bda1c6c05e55eb379e8a3463458b1fb",
-          "sender": "Alice",
-          "receiver": "Bob",
-          "amount": 40,
-          "timestamp": 1784557463
-        }
-      ],
-      "previous_hash": "00e8a054ceb26e378980eca87ba9a874162107996d31331094253687ef1fdb5b",
-      "nonce": 207,
-      "hash": "005c52a9e8340dedb46683cb8729f3a8d2359ab2be0c18e1f52a0eba2cddbb80"
+      "merkle_root": "f0729bb3cdf369d236d23de22e67b2c76ffb86b4912ca99dc9d88a099b973ea6",
+      "previous_hash": "aef789e23f01db04b88e29cb1a120c8798a17e9bee76af48116b3afb02ad5b47",
+      "nonce": 537,
+      "hash": "00b0b5df90dbab7b7c9b5e58a9282cb9a8445a74bf6cb61fa3b98d375e277f7c"
     }
   ],
   "PendingTransactions": null,

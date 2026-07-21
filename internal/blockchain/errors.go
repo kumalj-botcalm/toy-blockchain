@@ -9,4 +9,5 @@ var (
 	ErrInvalidProofOfWork  = errors.New("invalid proof of work")
 	ErrInvalidIndex = errors.New("invalid block index")
 	ErrInvalidTimestamp = errors.New("invalid timestamp")
+	ErrInvalidMerkleRoot = errors.New("invalid merkle root")
    )

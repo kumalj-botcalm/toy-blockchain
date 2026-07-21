@@ -15,10 +15,15 @@ type Transaction struct {
 	Receiver  string  `json:"receiver"`
 	Amount    float64 `json:"amount"`
 	Timestamp int64   `json:"timestamp"`
+
+	// Digital Signature
+	PublicKey string `json:"public_key,omitempty"`
+	Signature string `json:"signature,omitempty"`
 }
 
 // New creates a new transaction.
 func New(sender, receiver string, amount float64) (*Transaction, error) {
+
 	if sender == "" {
 		return nil, fmt.Errorf("sender cannot be empty")
 	}
@@ -48,7 +53,11 @@ func New(sender, receiver string, amount float64) (*Transaction, error) {
 	return tx, nil
 }
 
-// GenerateID creates a deterministic SHA-256 ID for the transaction.
+// GenerateID creates a deterministic SHA-256 ID.
+//
+// NOTE:
+// Signature and PublicKey are intentionally NOT included.
+// A transaction is signed AFTER its ID has been generated.
 func (t *Transaction) GenerateID() (string, error) {
 
 	data, err := json.Marshal(struct {
@@ -72,12 +81,25 @@ func (t *Transaction) GenerateID() (string, error) {
 	return hex.EncodeToString(hash[:]), nil
 }
 
-// String returns a human-readable representation of the transaction.
+// IsSigned returns true if the transaction has been signed.
+func (t Transaction) IsSigned() bool {
+	return t.PublicKey != "" && t.Signature != ""
+}
+
+// String returns a human-readable representation.
 func (t Transaction) String() string {
+
+	status := ""
+
+	if t.IsSigned() {
+		status = " (signed)"
+	}
+
 	return fmt.Sprintf(
-		"%s -> %s : %.2f",
+		"%s -> %s : %.2f%s",
 		t.Sender,
 		t.Receiver,
 		t.Amount,
+		status,
 	)
 }

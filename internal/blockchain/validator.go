@@ -1,6 +1,11 @@
 package blockchain
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/kumalj-botcalm/toy-blockchain/internal/merkle"
+)
 
 func (bc *Blockchain) Validate() error {
 
@@ -23,9 +28,24 @@ func (bc *Blockchain) Validate() error {
 		current := bc.Blocks[i]
 		previous := bc.Blocks[i-1]
 
+		// 1. Previous hash
 		if current.PreviousHash != previous.Hash {
 			return ErrInvalidPreviousHash
 		}
+
+		// 2. Rebuild Merkle Root
+		expectedRoot, err := merkle.BuildMerkleRoot(current.Transactions)
+		if err != nil {
+			return err
+		}
+
+		if expectedRoot != current.MerkleRoot {
+			fmt.Println("Stored Root  :", current.MerkleRoot)
+			fmt.Println("Expected Root:", expectedRoot)
+			return ErrInvalidMerkleRoot
+		}
+
+		// 3. Recalculate block hash
 		calculatedHash, err := current.CalculateHash()
 		if err != nil {
 			return err
@@ -35,19 +55,22 @@ func (bc *Blockchain) Validate() error {
 			return ErrInvalidHash
 		}
 
+		// 4. Proof of Work
 		target := strings.Repeat("0", bc.Difficulty)
-
 		if !strings.HasPrefix(current.Hash, target) {
 			return ErrInvalidProofOfWork
 		}
 
+		// 5. Height
 		if current.Index != previous.Index+1 {
 			return ErrInvalidIndex
 		}
 
+		// 6. Timestamp
 		if current.Timestamp < previous.Timestamp {
-	return ErrInvalidTimestamp
-}
+			return ErrInvalidTimestamp
+		}
+
 	}
 	return nil
 }

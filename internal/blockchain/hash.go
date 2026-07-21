@@ -8,15 +8,14 @@ import (
 
 // CalculateHash calculates the SHA-256 hash of a block.
 //
-// IMPORTANT:
-// The Hash field itself is NOT included in the hash calculation.
-// Otherwise every recalculation would generate a different value.
+// The block hash is calculated WITHOUT the Hash field itself.
+// Transactions are represented only by the Merkle Root.
 func (b *Block) CalculateHash() (string, error) {
 
 	type blockForHash struct {
 		Index        int
 		Timestamp    int64
-		Transactions interface{}
+		MerkleRoot   string
 		PreviousHash string
 		Nonce        uint64
 	}
@@ -24,7 +23,7 @@ func (b *Block) CalculateHash() (string, error) {
 	data := blockForHash{
 		Index:        b.Index,
 		Timestamp:    b.Timestamp,
-		Transactions: b.Transactions,
+		MerkleRoot:   b.MerkleRoot,
 		PreviousHash: b.PreviousHash,
 		Nonce:        b.Nonce,
 	}

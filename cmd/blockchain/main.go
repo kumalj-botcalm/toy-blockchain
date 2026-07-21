@@ -29,8 +29,11 @@ func main() {
 	case "balances":
 		runBalances()
 
-	// case "print":
-	// 	runPrint()
+	case "print":
+		runPrint()
+
+	case "create-wallet":
+		runCreateWallet()
 
 	default:
 		printUsage()
