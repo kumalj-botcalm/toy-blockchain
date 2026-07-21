@@ -1,11 +1,51 @@
 package blockchain
 
 import (
+	"os"
 	"testing"
 
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
 	"github.com/kumalj-botcalm/toy-blockchain/internal/wallet"
 )
+
+func createSignedTransaction(
+	t *testing.T,
+	sender, receiver string,
+	amount float64,
+) *transaction.Transaction {
+
+	t.Helper()
+
+	tx, err := transaction.New(sender, receiver, amount)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w, err := wallet.Generate(sender)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = w.Save()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() {
+		_ = os.Remove("wallets/" + sender + ".json")
+	})
+
+	err = tx.Sign(
+		w.PrivateKey,
+		w.PublicKey,
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return tx
+}
 
 func TestValidateValidBlockchain(t *testing.T) {
 
@@ -30,11 +70,13 @@ func TestValidateValidBlockchain(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Alice spends money
-	tx, err := transaction.New("Alice", "Bob", 50)
-	if err != nil {
-		t.Fatal(err)
-	}
+	// Signed transaction
+	tx := createSignedTransaction(
+		t,
+		"Alice",
+		"Bob",
+		50,
+	)
 
 	err = bc.AddTransaction(*tx)
 	if err != nil {
@@ -54,12 +96,18 @@ func TestValidateValidBlockchain(t *testing.T) {
 
 func TestDetectTamperedBlock(t *testing.T) {
 
-	bc, _ := New(2)
+	bc, err := New(2)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Fund Alice
-	fund, _ := transaction.New(SystemAccount, "Alice", 100)
+	fund, err := transaction.New(SystemAccount, "Alice", 100)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	err := bc.AddTransaction(*fund)
+	err = bc.AddTransaction(*fund)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,10 +117,13 @@ func TestDetectTamperedBlock(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Alice spends
-	tx, _ := transaction.New("Alice", "Bob", 50)
-
-		w, _ := wallet.Generate("Alice")
+	// Signed transaction
+	tx := createSignedTransaction(
+		t,
+		"Alice",
+		"Bob",
+		50,
+	)
 
 	err = bc.AddTransaction(*tx)
 	if err != nil {
@@ -84,7 +135,7 @@ func TestDetectTamperedBlock(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Tamper second mined block
+	// Tamper transaction
 	bc.Blocks[2].Transactions[0].Amount = 999999
 
 	err = bc.Validate()
@@ -96,15 +147,29 @@ func TestDetectTamperedBlock(t *testing.T) {
 
 func TestInvalidBlockIndex(t *testing.T) {
 
-	bc, _ := New(2)
+	bc, err := New(2)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	fund, _ := transaction.New(SystemAccount, "Alice", 100)
-	_ = bc.AddTransaction(*fund)
-	_ = bc.MinePendingTransactions()
+	fund, err := transaction.New(SystemAccount, "Alice", 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = bc.AddTransaction(*fund)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = bc.MinePendingTransactions()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	bc.Blocks[1].Index = 99
 
-	err := bc.Validate()
+	err = bc.Validate()
 
 	if err == nil {
 		t.Fatal("expected invalid block index")
@@ -113,17 +178,29 @@ func TestInvalidBlockIndex(t *testing.T) {
 
 func TestInvalidTimestamp(t *testing.T) {
 
-	bc, _ := New(2)
+	bc, err := New(2)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	fund, _ := transaction.New(SystemAccount, "Alice", 100)
+	fund, err := transaction.New(SystemAccount, "Alice", 100)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	_ = bc.AddTransaction(*fund)
-	_ = bc.MinePendingTransactions()
+	err = bc.AddTransaction(*fund)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	// Make timestamp older than previous block
+	err = bc.MinePendingTransactions()
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	bc.Blocks[1].Timestamp = bc.Blocks[0].Timestamp - 1
 
-	err := bc.Validate()
+	err = bc.Validate()
 
 	if err == nil {
 		t.Fatal("expected invalid timestamp")
