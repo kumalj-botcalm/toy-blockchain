@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"	
+	"path/filepath"
 )
 
 const WalletDirectory = "wallets"
@@ -48,8 +48,8 @@ func Generate(owner string) (*Wallet, error) {
 	}
 
 	return &Wallet{
-		Owner: owner,
-		PublicKey: hex.EncodeToString(publicBytes),
+		Owner:      owner,
+		PublicKey:  hex.EncodeToString(publicBytes),
 		PrivateKey: hex.EncodeToString(privateBytes),
 	}, nil
 }

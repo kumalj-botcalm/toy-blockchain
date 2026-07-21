@@ -2,15 +2,21 @@ package blockchain
 
 import (
 	"fmt"
-	"strings"
-		
+	"time"
+
+	"github.com/kumalj-botcalm/toy-blockchain/internal/miner"
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
 )
+
 // Blockchain represents the blockchain.
 type Blockchain struct {
 	Blocks              []Block
 	PendingTransactions []transaction.Transaction
 	Difficulty          int
+
+	// Runtime statistics used for difficulty adjustment.
+	// Not persisted to JSON.
+	MiningTimes []time.Duration `json:"-"`
 }
 
 // New creates a new blockchain with a genesis block.
@@ -25,6 +31,7 @@ func New(difficulty int) (*Blockchain, error) {
 		Blocks:              []Block{*genesis},
 		PendingTransactions: []transaction.Transaction{},
 		Difficulty:          difficulty,
+		MiningTimes:         []time.Duration{},
 	}, nil
 }
 
@@ -63,23 +70,40 @@ func (bc *Blockchain) MinePendingTransactions() error {
 		lastBlock.Hash,
 	)
 
-	target := strings.Repeat("0", bc.Difficulty)
+	// Start timing the mining process.
+	start := time.Now()
 
-	for {
+	result, err := miner.Mine(
+		bc.Difficulty,
+		func(nonce uint64) (string, error) {
+			return block.CalculateHashWithNonce(nonce)
+		},
+	)
 
-		hash, err := block.CalculateHash()
-		if err != nil {
-			return err
-		}
-
-		if strings.HasPrefix(hash, target) {
-
-			block.Hash = hash
-			break
-		}
-
-		block.Nonce++
+	if err != nil {
+		return err
 	}
+
+	// Only update the block after a valid nonce is found.
+	block.Nonce = result.Nonce
+	block.Hash = result.Hash
+
+	elapsed := time.Since(start)
+
+	block.MiningDurationMs =
+		elapsed.Milliseconds()
+
+	fmt.Printf(
+		"Mining completed in %.3f ms\n",
+		float64(elapsed.Microseconds())/1000,
+	)
+
+	bc.adjustDifficulty()
+
+	fmt.Printf(
+		"Current Difficulty : %d\n",
+		bc.Difficulty,
+	)
 
 	bc.Blocks = append(bc.Blocks, *block)
 
@@ -95,6 +119,3 @@ func (bc *Blockchain) Print() {
 		fmt.Println(block)
 	}
 }
-
-
-

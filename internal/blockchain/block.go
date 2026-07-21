@@ -15,12 +15,16 @@ type Block struct {
 	Timestamp    int64                     `json:"timestamp"`
 	Transactions []transaction.Transaction `json:"transactions"`
 
-	// NEW
 	MerkleRoot string `json:"merkle_root"`
 
 	PreviousHash string `json:"previous_hash"`
-	Nonce        uint64 `json:"nonce"`
-	Hash         string `json:"hash"`
+
+	Nonce uint64 `json:"nonce"`
+
+	// Analytics only.
+	MiningDurationMs int64 `json:"mining_duration_ms"`
+
+	Hash string `json:"hash"`
 }
 
 // NewBlock creates a new block.
@@ -37,7 +41,7 @@ func NewBlock(
 		PreviousHash: previousHash,
 		Nonce:        0,
 	}
-	
+
 	root, err := merkle.BuildMerkleRoot(transactions)
 	if err != nil {
 		return nil
@@ -69,7 +73,6 @@ func (b Block) String() string {
 
 	out.WriteString(fmt.Sprintf("Merkle Root: %s\n", b.MerkleRoot))
 
-	
 	if len(b.Transactions) == 0 {
 		out.WriteString("  (none)\n")
 	} else {
