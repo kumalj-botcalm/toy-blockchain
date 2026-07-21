@@ -2,34 +2,31 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
-
-	"github.com/kumalj-botcalm/toy-blockchain/internal/blockchain"
 )
 
 func runFund() {
 
-	if len(os.Args) != 4 {
-		fmt.Println("Usage:")
-		fmt.Println("  fund <account> <amount>")
+	args := args()
+
+	if len(args) != 3 {
+		fmt.Println("Usage: fund <account> <amount>")
 		return
 	}
 
-	account := os.Args[2]
+	account := args[1]
 
-	amount, err := strconv.ParseFloat(os.Args[3], 64)
+	amount, err := strconv.ParseFloat(args[2], 64)
 	if err != nil {
 		fmt.Println("Invalid amount")
 		return
 	}
 
 	err = addTransaction(
-		blockchain.SystemAccount,
+		"SYSTEM",
 		account,
 		amount,
 	)
-
 	if err != nil {
 		fmt.Println("Error:", err)
 		return

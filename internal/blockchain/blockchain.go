@@ -13,10 +13,7 @@ type Blockchain struct {
 	Blocks              []Block
 	PendingTransactions []transaction.Transaction
 	Difficulty          int
-
-	// Runtime statistics used for difficulty adjustment.
-	// Not persisted to JSON.
-	MiningTimes []time.Duration `json:"-"`
+	MaxBlockSize        int
 }
 
 // New creates a new blockchain with a genesis block.
@@ -31,7 +28,7 @@ func New(difficulty int) (*Blockchain, error) {
 		Blocks:              []Block{*genesis},
 		PendingTransactions: []transaction.Transaction{},
 		Difficulty:          difficulty,
-		MiningTimes:         []time.Duration{},
+		MaxBlockSize:        DefaultBlockSize,
 	}, nil
 }
 
@@ -55,7 +52,7 @@ func (bc *Blockchain) AddTransaction(tx transaction.Transaction) error {
 	return nil
 }
 
-// MinePendingTransactions mines all pending transactions into a new block.
+// MinePendingTransactions mines pending transactions into a block.
 func (bc *Blockchain) MinePendingTransactions() error {
 
 	if len(bc.PendingTransactions) == 0 {
@@ -64,13 +61,19 @@ func (bc *Blockchain) MinePendingTransactions() error {
 
 	lastBlock := bc.Blocks[len(bc.Blocks)-1]
 
+	// Mine only up to MaxBlockSize transactions.
+	transactions := bc.PendingTransactions
+
+	if len(transactions) > bc.MaxBlockSize {
+		transactions = transactions[:bc.MaxBlockSize]
+	}
+
 	block := NewBlock(
 		len(bc.Blocks),
-		bc.PendingTransactions,
+		transactions,
 		lastBlock.Hash,
 	)
 
-	// Start timing the mining process.
 	start := time.Now()
 
 	result, err := miner.Mine(
@@ -84,20 +87,21 @@ func (bc *Blockchain) MinePendingTransactions() error {
 		return err
 	}
 
-	// Only update the block after a valid nonce is found.
 	block.Nonce = result.Nonce
 	block.Hash = result.Hash
 
 	elapsed := time.Since(start)
-
-	block.MiningDurationMs =
-		elapsed.Milliseconds()
+	block.MiningDurationMs = elapsed.Milliseconds()
 
 	fmt.Printf(
 		"Mining completed in %.3f ms\n",
 		float64(elapsed.Microseconds())/1000,
 	)
 
+	// Block is now officially mined.
+	bc.Blocks = append(bc.Blocks, *block)
+
+	// Difficulty adjustment.
 	bc.adjustDifficulty()
 
 	fmt.Printf(
@@ -105,9 +109,12 @@ func (bc *Blockchain) MinePendingTransactions() error {
 		bc.Difficulty,
 	)
 
-	bc.Blocks = append(bc.Blocks, *block)
-
-	bc.PendingTransactions = nil
+	// Remove only the transactions that were mined.
+	if len(bc.PendingTransactions) > bc.MaxBlockSize {
+		bc.PendingTransactions = bc.PendingTransactions[bc.MaxBlockSize:]
+	} else {
+		bc.PendingTransactions = nil
+	}
 
 	return nil
 }
