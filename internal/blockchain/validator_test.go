@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
+	"github.com/kumalj-botcalm/toy-blockchain/internal/wallet"
 )
 
 func TestValidateValidBlockchain(t *testing.T) {
@@ -71,6 +72,8 @@ func TestDetectTamperedBlock(t *testing.T) {
 	// Alice spends
 	tx, _ := transaction.New("Alice", "Bob", 50)
 
+		w, _ := wallet.Generate("Alice")
+
 	err = bc.AddTransaction(*tx)
 	if err != nil {
 		t.Fatal(err)
@@ -91,7 +94,6 @@ func TestDetectTamperedBlock(t *testing.T) {
 	}
 }
 
-
 func TestInvalidBlockIndex(t *testing.T) {
 
 	bc, _ := New(2)
@@ -108,7 +110,6 @@ func TestInvalidBlockIndex(t *testing.T) {
 		t.Fatal("expected invalid block index")
 	}
 }
-
 
 func TestInvalidTimestamp(t *testing.T) {
 
