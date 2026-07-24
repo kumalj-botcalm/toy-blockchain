@@ -9,9 +9,27 @@
       "nonce": 0,
       "mining_duration_ms": 0,
       "hash": "aef789e23f01db04b88e29cb1a120c8798a17e9bee76af48116b3afb02ad5b47"
+    },
+    {
+      "index": 1,
+      "timestamp": 1784896471,
+      "transactions": [
+        {
+          "id": "7a8ba90b41535bc86ccc6d81a39bae9f30c8536723b9a033cd888247a4717ca7",
+          "sender": "SYSTEM",
+          "receiver": "Alice",
+          "amount": 100,
+          "timestamp": 1784896471
+        }
+      ],
+      "merkle_root": "c06f84ea00bf914f12d9c0d30cb2995b9f7872e1c1ffb313bd241dbdbe0a4328",
+      "previous_hash": "aef789e23f01db04b88e29cb1a120c8798a17e9bee76af48116b3afb02ad5b47",
+      "nonce": 431,
+      "mining_duration_ms": 0,
+      "hash": "00da193ffbd939b82fc0a76d42429638f756750767aae4a5603510fd90043f9f"
     }
   ],
-  "PendingTransactions": [],
+  "PendingTransactions": null,
   "Difficulty": 2,
   "MaxBlockSize": 5
 }
