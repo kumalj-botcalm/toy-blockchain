@@ -2,15 +2,18 @@ package blockchain
 
 import (
 	"fmt"
-	"strings"
-		
+	"time"
+
+	"github.com/kumalj-botcalm/toy-blockchain/internal/miner"
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
 )
+
 // Blockchain represents the blockchain.
 type Blockchain struct {
 	Blocks              []Block
 	PendingTransactions []transaction.Transaction
 	Difficulty          int
+	MaxBlockSize        int
 }
 
 // New creates a new blockchain with a genesis block.
@@ -25,6 +28,7 @@ func New(difficulty int) (*Blockchain, error) {
 		Blocks:              []Block{*genesis},
 		PendingTransactions: []transaction.Transaction{},
 		Difficulty:          difficulty,
+		MaxBlockSize:        DefaultBlockSize,
 	}, nil
 }
 
@@ -48,7 +52,7 @@ func (bc *Blockchain) AddTransaction(tx transaction.Transaction) error {
 	return nil
 }
 
-// MinePendingTransactions mines all pending transactions into a new block.
+// MinePendingTransactions mines pending transactions into a block.
 func (bc *Blockchain) MinePendingTransactions() error {
 
 	if len(bc.PendingTransactions) == 0 {
@@ -57,33 +61,60 @@ func (bc *Blockchain) MinePendingTransactions() error {
 
 	lastBlock := bc.Blocks[len(bc.Blocks)-1]
 
+	// Mine only up to MaxBlockSize transactions.
+	transactions := bc.PendingTransactions
+
+	if len(transactions) > bc.MaxBlockSize {
+		transactions = transactions[:bc.MaxBlockSize]
+	}
+
 	block := NewBlock(
 		len(bc.Blocks),
-		bc.PendingTransactions,
+		transactions,
 		lastBlock.Hash,
 	)
 
-	target := strings.Repeat("0", bc.Difficulty)
+	start := time.Now()
 
-	for {
+	result, err := miner.Mine(
+		bc.Difficulty,
+		func(nonce uint64) (string, error) {
+			return block.CalculateHashWithNonce(nonce)
+		},
+	)
 
-		hash, err := block.CalculateHash()
-		if err != nil {
-			return err
-		}
-
-		if strings.HasPrefix(hash, target) {
-
-			block.Hash = hash
-			break
-		}
-
-		block.Nonce++
+	if err != nil {
+		return err
 	}
 
+	block.Nonce = result.Nonce
+	block.Hash = result.Hash
+
+	elapsed := time.Since(start)
+	block.MiningDurationMs = elapsed.Milliseconds()
+
+	fmt.Printf(
+		"Mining completed in %.3f ms\n",
+		float64(elapsed.Microseconds())/1000,
+	)
+
+	// Block is now officially mined.
 	bc.Blocks = append(bc.Blocks, *block)
 
-	bc.PendingTransactions = nil
+	// Difficulty adjustment.
+	bc.adjustDifficulty()
+
+	fmt.Printf(
+		"Current Difficulty : %d\n",
+		bc.Difficulty,
+	)
+
+	// Remove only the transactions that were mined.
+	if len(bc.PendingTransactions) > bc.MaxBlockSize {
+		bc.PendingTransactions = bc.PendingTransactions[bc.MaxBlockSize:]
+	} else {
+		bc.PendingTransactions = nil
+	}
 
 	return nil
 }
@@ -95,6 +126,3 @@ func (bc *Blockchain) Print() {
 		fmt.Println(block)
 	}
 }
-
-
-

@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kumalj-botcalm/toy-blockchain/internal/merkle"
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
 )
 
@@ -13,9 +14,17 @@ type Block struct {
 	Index        int                       `json:"index"`
 	Timestamp    int64                     `json:"timestamp"`
 	Transactions []transaction.Transaction `json:"transactions"`
-	PreviousHash string                    `json:"previous_hash"`
-	Nonce        uint64                    `json:"nonce"`
-	Hash         string                    `json:"hash"`
+
+	MerkleRoot string `json:"merkle_root"`
+
+	PreviousHash string `json:"previous_hash"`
+
+	Nonce uint64 `json:"nonce"`
+
+	// Analytics only.
+	MiningDurationMs int64 `json:"mining_duration_ms"`
+
+	Hash string `json:"hash"`
 }
 
 // NewBlock creates a new block.
@@ -25,13 +34,21 @@ func NewBlock(
 	previousHash string,
 ) *Block {
 
-	return &Block{
+	block := &Block{
 		Index:        index,
 		Timestamp:    time.Now().Unix(),
 		Transactions: transactions,
 		PreviousHash: previousHash,
 		Nonce:        0,
 	}
+
+	root, err := merkle.BuildMerkleRoot(transactions)
+	if err != nil {
+		return nil
+	}
+
+	block.MerkleRoot = root
+	return block
 }
 
 // String returns a formatted representation of the block.
@@ -53,6 +70,8 @@ func (b Block) String() string {
 		time.Unix(b.Timestamp, 0).Format(time.RFC3339)))
 
 	out.WriteString("Transactions:\n")
+
+	out.WriteString(fmt.Sprintf("Merkle Root: %s\n", b.MerkleRoot))
 
 	if len(b.Transactions) == 0 {
 		out.WriteString("  (none)\n")

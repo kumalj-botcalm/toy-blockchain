@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/kumalj-botcalm/toy-blockchain/internal/blockchain"
-	"github.com/kumalj-botcalm/toy-blockchain/internal/storage"
 )
 
 func runInit() {
+
 	fmt.Println("Initializing blockchain...")
 
 	bc, err := blockchain.New(blockchain.DefaultDifficulty)
@@ -15,7 +16,7 @@ func runInit() {
 		return
 	}
 
-	err = storage.Save(blockchain.DefaultChainFile, bc)
+	err = saveChain(bc)
 	if err != nil {
 		fmt.Println("Error saving blockchain:", err)
 		return

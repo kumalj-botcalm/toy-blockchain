@@ -6,7 +6,9 @@ func (bc *Blockchain) AvailableBalances() map[string]float64 {
 
 	copyBalances := make(map[string]float64)
 
-	copyBalances = balances
+	for account, balance := range balances {
+		copyBalances[account] = balance
+	}
 
 	for _, tx := range bc.PendingTransactions {
 
@@ -18,7 +20,6 @@ func (bc *Blockchain) AvailableBalances() map[string]float64 {
 		copyBalances[tx.Receiver] += tx.Amount
 	}
 
-return copyBalances
+	return copyBalances
 
-	
 }

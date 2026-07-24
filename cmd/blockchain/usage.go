@@ -7,6 +7,7 @@ func printUsage() {
 	fmt.Println()
 	fmt.Println("Commands:")
 	fmt.Println("  init")
+	fmt.Println("  create-wallet <owner>")
 	fmt.Println("  fund <account> <amount>")
 	fmt.Println("  send <from> <to> <amount>")
 	fmt.Println("  mine")

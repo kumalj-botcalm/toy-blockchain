@@ -6,17 +6,13 @@ import (
 	"encoding/json"
 )
 
-// CalculateHash calculates the SHA-256 hash of a block.
-//
-// IMPORTANT:
-// The Hash field itself is NOT included in the hash calculation.
-// Otherwise every recalculation would generate a different value.
-func (b *Block) CalculateHash() (string, error) {
+// calculateHashData is the common implementation.
+func (b *Block) calculateHashData(nonce uint64) (string, error) {
 
 	type blockForHash struct {
 		Index        int
 		Timestamp    int64
-		Transactions interface{}
+		MerkleRoot   string
 		PreviousHash string
 		Nonce        uint64
 	}
@@ -24,9 +20,9 @@ func (b *Block) CalculateHash() (string, error) {
 	data := blockForHash{
 		Index:        b.Index,
 		Timestamp:    b.Timestamp,
-		Transactions: b.Transactions,
+		MerkleRoot:   b.MerkleRoot,
 		PreviousHash: b.PreviousHash,
-		Nonce:        b.Nonce,
+		Nonce:        nonce,
 	}
 
 	bytes, err := json.Marshal(data)
@@ -37,4 +33,15 @@ func (b *Block) CalculateHash() (string, error) {
 	hash := sha256.Sum256(bytes)
 
 	return hex.EncodeToString(hash[:]), nil
+}
+
+// CalculateHash calculates the hash using the block's current nonce.
+func (b *Block) CalculateHash() (string, error) {
+	return b.calculateHashData(b.Nonce)
+}
+
+// CalculateHashWithNonce calculates the hash using a supplied nonce.
+// It does NOT modify the block.
+func (b *Block) CalculateHashWithNonce(nonce uint64) (string, error) {
+	return b.calculateHashData(nonce)
 }

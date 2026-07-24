@@ -1,15 +1,19 @@
 package main
 
-import "os"
+import "flag"
 
 func main() {
 
-	if len(os.Args) < 2 {
+	flag.Parse()
+
+	args := flag.Args()
+
+	if len(args) < 1 {
 		printUsage()
 		return
 	}
 
-	switch os.Args[1] {
+	switch args[0] {
 
 	case "init":
 		runInit()
@@ -31,6 +35,9 @@ func main() {
 
 	case "print":
 		runPrint()
+
+	case "create-wallet":
+		runCreateWallet()
 
 	default:
 		printUsage()
