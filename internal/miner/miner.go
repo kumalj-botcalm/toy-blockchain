@@ -13,7 +13,7 @@ func Mine(
 
 	workers := runtime.NumCPU()
 
-	results := make(chan Result, 1)
+	results := make(chan Result, workers)
 	stop := make(chan struct{})
 
 	var once sync.Once

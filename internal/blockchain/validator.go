@@ -14,11 +14,12 @@ func (bc *Blockchain) Validate() error {
 
 	genesis := bc.Blocks[0]
 
-	if genesis.Index != 0 {
-		return ErrInvalidGenesis
+	expectedGenesis, err := NewGenesisBlock()
+	if err != nil {
+		return err
 	}
 
-	if genesis.PreviousHash != GenesisPreviousHash {
+	if genesis.Hash != expectedGenesis.Hash {
 		return ErrInvalidGenesis
 	}
 
@@ -66,7 +67,8 @@ func (bc *Blockchain) Validate() error {
 		}
 
 		// Proof-of-Work validation
-		target := strings.Repeat("0", bc.Difficulty)
+		expectedDifficulty := ExpectedDifficultyAt(bc.Blocks, i)
+		target := strings.Repeat("0", expectedDifficulty)
 
 		if !strings.HasPrefix(current.Hash, target) {
 			return ErrInvalidProofOfWork

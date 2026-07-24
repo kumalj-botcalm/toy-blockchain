@@ -62,3 +62,30 @@ func (bc *Blockchain) adjustDifficulty() {
 		)
 	}
 }
+
+// ExpectedDifficultyAt calculates the required difficulty for the block at the given index
+// by replaying the difficulty adjustment algorithm from genesis.
+func ExpectedDifficultyAt(blocks []Block, index int) int {
+	difficulty := DefaultDifficulty
+
+	for i := AdjustmentInterval + 1; i <= index; i++ {
+		start := i - AdjustmentInterval - 1
+		var total time.Duration
+
+		for j := start + 1; j < i; j++ {
+			prev := blocks[j-1]
+			curr := blocks[j]
+			total += time.Duration(curr.Timestamp-prev.Timestamp) * time.Second
+		}
+
+		average := total / AdjustmentInterval
+
+		if average < time.Second {
+			difficulty++
+		} else if average > 3*time.Second && difficulty > MinimumDifficulty {
+			difficulty--
+		}
+	}
+
+	return difficulty
+}
