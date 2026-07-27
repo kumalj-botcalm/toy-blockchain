@@ -62,6 +62,11 @@ func addTransaction(sender, receiver string, amount float64) error {
 	return saveChain(chain)
 }
 
+var interactiveArgs []string
+
 func args() []string {
+	if interactiveArgs != nil {
+		return interactiveArgs
+	}
 	return flag.Args()
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/kumalj-botcalm/toy-blockchain/internal/transaction"
@@ -11,16 +10,18 @@ import (
 
 func runSend() {
 
-	if len(os.Args) != 5 {
+	args := args()
+
+	if len(args) != 4 {
 		fmt.Println("Usage:")
 		fmt.Println("  send <from> <to> <amount>")
 		return
 	}
 
-	from := os.Args[2]
-	to := os.Args[3]
+	from := args[1]
+	to := args[2]
 
-	amount, err := strconv.ParseFloat(os.Args[4], 64)
+	amount, err := strconv.ParseFloat(args[3], 64)
 	if err != nil {
 		fmt.Println("Invalid amount")
 		return

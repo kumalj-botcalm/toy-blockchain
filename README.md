@@ -154,7 +154,23 @@ go test ./internal/miner -bench=.
 
 # Command Line Usage
 
-## Initialize Blockchain
+## Interactive Menu (Recommended)
+
+The CLI includes an interactive, user-friendly menu by default. Simply run the executable without any arguments to launch it:
+
+```bash
+go run ./cmd/blockchain
+```
+
+The interactive menu will guide you through all available features and prompt you for any required inputs automatically.
+
+---
+
+## Direct Commands
+
+You can also run commands directly by passing arguments. This is useful for automation or quick execution.
+
+### Initialize Blockchain
 
 ```bash
 go run ./cmd/blockchain init

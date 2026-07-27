@@ -11,7 +11,15 @@
       "hash": "aef789e23f01db04b88e29cb1a120c8798a17e9bee76af48116b3afb02ad5b47"
     }
   ],
-  "PendingTransactions": [],
+  "PendingTransactions": [
+    {
+      "id": "dbf749c697b305367f23c399a1b64d954ba016063678947bb46d3e3be8f432f2",
+      "sender": "SYSTEM",
+      "receiver": "kamal",
+      "amount": 10,
+      "timestamp": 1785153514
+    }
+  ],
   "Difficulty": 2,
   "MaxBlockSize": 5
 }

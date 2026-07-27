@@ -2,20 +2,21 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/kumalj-botcalm/toy-blockchain/internal/wallet"
 )
 
 func runCreateWallet() {
 
-	if len(os.Args) != 3 {
+	args := args()
+
+	if len(args) != 2 {
 		fmt.Println("Usage:")
 		fmt.Println("  create-wallet <owner>")
 		return
 	}
 
-	owner := os.Args[2]
+	owner := args[1]
 
 	fmt.Println("Creating wallet...")
 
